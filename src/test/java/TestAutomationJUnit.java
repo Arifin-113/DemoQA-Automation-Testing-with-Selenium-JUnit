@@ -1,5 +1,7 @@
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -20,8 +22,26 @@ public class TestAutomationJUnit {
     }
 
     @Test
-    public void targetsite(){
+    public void targetSite(){
         driver.get("https://demoqa.com");
     }
+
+    @Test
+    public void getTitle(){
+        driver.get("https://demoqa.com");
+        String titleActual = driver.getTitle();
+        String titleExpected = "DEMOQA";
+
+        Assert.assertEquals(titleExpected, titleActual);
+
+    }
+
+    @Test
+    public void getTitleImg(){
+        driver.get("https://demoqa.com");
+        driver.findElement(By.cssSelector("img[src='/images/Toolsqa.jpg']"));
+    }
+
+
 }
 
