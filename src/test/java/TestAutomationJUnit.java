@@ -1,3 +1,4 @@
+import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class TestAutomationJUnit {
 
@@ -79,11 +81,35 @@ public class TestAutomationJUnit {
         WebElement button = driver.findElement(By.xpath("//button[@id='doubleClickBtn']"));
         actions.doubleClick(button).perform();
     }
+//    @Test
+//    public void clickme() {
+//        driver.get("https://demoqa.com/buttons");
+//        Actions actions = new Actions(driver);
+//        WebElement button = driver.findElements(By.xpath("//button[contains(text(),'Click Me')]")).get(2);
+//        actions.click(button).perform();
+//
+//    }
+    @Test
+    public void clickMultipleButtons(){
+        driver.get("https://demoqa.com/buttons");
+        Actions action = new Actions(driver);
 
-      public void clickMe() {
-          driver.get("https://demoqa.com/buttons");
-          driver.findElement(By.xpath("//button[@id='doubleClickBtn']")).click();
-}
+        List<WebElement> list = driver.findElements(By.cssSelector("buttons"));
+
+        action.doubleClick(list.get(1)).perform();
+        String text = driver.findElement(By.id("doubleClickMessage")).getText();
+        Assert.assertTrue(text.contains("You have done a double click"));
+
+        action.contextClick(list.get(2)).perform();
+        String text2 = driver.findElement(By.id("rightClickMessage")).getText();
+        Assert.assertTrue(text2.contains("You have done a right click"));
+
+        action.click(list.get(3)).perform();
+        String text3 = driver.findElement(By.id("dynamicClickMessage")).getText();
+        Assert.assertTrue(text3.contains("You have done a dynamic click"));
+    }
+
+
 
 
 
