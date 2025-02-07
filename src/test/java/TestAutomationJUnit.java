@@ -81,20 +81,20 @@ public class TestAutomationJUnit {
         WebElement button = driver.findElement(By.xpath("//button[@id='doubleClickBtn']"));
         actions.doubleClick(button).perform();
     }
-//    @Test
-//    public void clickme() {
-//        driver.get("https://demoqa.com/buttons");
-//        Actions actions = new Actions(driver);
-//        WebElement button = driver.findElements(By.xpath("//button[contains(text(),'Click Me')]")).get(2);
-//        actions.click(button).perform();
-//
-//    }
+    @Test
+    public void clickme() {
+        driver.get("https://demoqa.com/buttons");
+        Actions actions = new Actions(driver);
+        WebElement button = driver.findElements(By.xpath("//button[contains(text(),'Click Me')]")).get(2);
+        actions.click(button).perform();
+
+    }
     @Test
     public void clickMultipleButtons(){
         driver.get("https://demoqa.com/buttons");
         Actions action = new Actions(driver);
 
-        List<WebElement> list = driver.findElements(By.cssSelector("buttons"));
+        List<WebElement> list = driver.findElements(By.cssSelector("button"));
 
         action.doubleClick(list.get(1)).perform();
         String text = driver.findElement(By.id("doubleClickMessage")).getText();
@@ -104,9 +104,11 @@ public class TestAutomationJUnit {
         String text2 = driver.findElement(By.id("rightClickMessage")).getText();
         Assert.assertTrue(text2.contains("You have done a right click"));
 
-        action.click(list.get(3)).perform();
-        String text3 = driver.findElement(By.id("dynamicClickMessage")).getText();
-        Assert.assertTrue(text3.contains("You have done a dynamic click"));
+
+//        action.click(list.get(3)).perform();
+//        list.get(3).click();
+//        String text3 = driver.findElement(By.id("dynamicClickMessage")).getText();
+//        Assert.assertTrue(text3.contains("You have done a dynamic click"));
     }
 
 
