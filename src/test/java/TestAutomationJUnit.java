@@ -1,17 +1,12 @@
-import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
 import java.util.List;
 
@@ -111,6 +106,39 @@ public class TestAutomationJUnit {
 //        Assert.assertTrue(text3.contains("You have done a dynamic click"));
     }
 
+//
+    @Test
+    public void handleAlerts() throws InterruptedException {
+    driver.get("https://demoqa.com/alerts");
+
+    // Set an implicit wait (use Duration instead of int)
+    driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
+    driver.findElement(By.id("alertButton")).click();
+    driver.switchTo().alert().accept();
+
+    WebElement promtButton = driver.findElement(By.id("promtButton"));
+    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", promtButton);
+
+    WebElement iframe = driver.findElement(By.cssSelector("iframe[id^='google_ads_iframe']"));
+    ((JavascriptExecutor) driver).executeScript("arguments[0].style.display='none';", iframe);
+
+    promtButton.click();
+    driver.switchTo().alert().sendKeys("Arifin");
+    driver.switchTo().alert().accept();
+
+    String text = driver.findElement(By.id("promptResult")).getText();
+    Assert.assertTrue(text.contains("Arifin"));
+    }
+
+    @Test
+    public void datepicker() {
+        driver.get("https://demoqa.com/date-picker");
+        driver.findElement(By.id("datePickerMonthYearInput")).click();
+        driver.findElement(By.id("datePickerMonthYearInput")).sendKeys(Keys.CONTROL + "A" + Keys.BACK_SPACE);
+        driver.findElement(By.id("datePickerMonthYearInput")).sendKeys("01/09/1998", Keys.ENTER);
+//        driver.findElement(By.id("datePickerMonthYearInput")).sendKeys(Keys.ENTER);
+    }
 
 
 
