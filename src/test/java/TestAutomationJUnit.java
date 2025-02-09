@@ -6,9 +6,13 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.List;
+import java.util.*;
 
 public class TestAutomationJUnit {
 
@@ -69,6 +73,7 @@ public class TestAutomationJUnit {
         Assert.assertTrue(driver.findElement(By.cssSelector("#name")).getText().contains("Mahmud"));
 
     }
+
     @Test
     public void doubleClickMe() {
         driver.get("https://demoqa.com/buttons");
@@ -76,6 +81,7 @@ public class TestAutomationJUnit {
         WebElement button = driver.findElement(By.xpath("//button[@id='doubleClickBtn']"));
         actions.doubleClick(button).perform();
     }
+
     @Test
     public void clickme() {
         driver.get("https://demoqa.com/buttons");
@@ -84,8 +90,9 @@ public class TestAutomationJUnit {
         actions.click(button).perform();
 
     }
+
     @Test
-    public void clickMultipleButtons(){
+    public void clickMultipleButtons() {
         driver.get("https://demoqa.com/buttons");
         Actions action = new Actions(driver);
 
@@ -106,29 +113,32 @@ public class TestAutomationJUnit {
 //        Assert.assertTrue(text3.contains("You have done a dynamic click"));
     }
 
-//
+    //
     @Test
     public void handleAlerts() throws InterruptedException {
-    driver.get("https://demoqa.com/alerts");
+        driver.get("https://demoqa.com/alerts");
 
-    // Set an implicit wait (use Duration instead of int)
-    driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        // Set an implicit wait (use Duration instead of int)
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(732,542)", "");
 
-    driver.findElement(By.id("alertButton")).click();
-    driver.switchTo().alert().accept();
+        driver.findElement(By.id("alertButton")).click();
+        driver.switchTo().alert().accept();
 
-    WebElement promtButton = driver.findElement(By.id("promtButton"));
-    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", promtButton);
+        WebElement promtButton = driver.findElement(By.id("promtButton"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", promtButton);
 
-    WebElement iframe = driver.findElement(By.cssSelector("iframe[id^='google_ads_iframe']"));
-    ((JavascriptExecutor) driver).executeScript("arguments[0].style.display='none';", iframe);
+//    WebElement iframe = driver.findElement(By.cssSelector("iframe[id^='google_ads_iframe']"));
+//    ((JavascriptExecutor) driver).executeScript("arguments[0].style.display='none';", iframe);
 
-    promtButton.click();
-    driver.switchTo().alert().sendKeys("Arifin");
-    driver.switchTo().alert().accept();
 
-    String text = driver.findElement(By.id("promptResult")).getText();
-    Assert.assertTrue(text.contains("Arifin"));
+        promtButton.click();
+        driver.switchTo().alert().sendKeys("Arifin");
+        driver.switchTo().alert().accept();
+
+        String text = driver.findElement(By.id("promptResult")).getText();
+        Assert.assertTrue(text.contains("Arifin"));
     }
 
     @Test
@@ -140,8 +150,147 @@ public class TestAutomationJUnit {
 //        driver.findElement(By.id("datePickerMonthYearInput")).sendKeys(Keys.ENTER);
     }
 
+    @Test
+    public void gettingCurrentDate() {
+        driver.get("https://demoqa.com/date-picker");
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+//        WebElement iframe = driver.findElement(By.cssSelector("iframe[id^='google_ads_iframe']"));
+//        ((JavascriptExecutor) driver).executeScript("arguments[0].style.display='none';", iframe);
+        driver.findElement(By.id("datePickerMonthYearInput")).click();
+        driver.findElement(By.id("datePickerMonthYearInput")).sendKeys(Keys.CONTROL + "A" + Keys.BACK_SPACE);
+        // Create object of SimpleDateFormat class and decide the format
+        DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        //get current date time with Date()
+        Date date = new Date();
+        // Now format the date
+        String currentDate = dateFormat.format(date);
+        driver.findElement(By.id("datePickerMonthYearInput")).sendKeys(currentDate, Keys.ENTER);
+    }
+
+    public void waitForThePresenceOfTheElement(By webElement) {
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(webElement));
+
+    }
+
+    @Test
+    public void selectingDateFromDropdown() {
+        driver.get("https://demoqa.com/date-picker");
+
+        driver.findElement(By.id("datePickerMonthYearInput")).click();
+//        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+//        wait.until(ExpectedConditions.presenceOfElementLocated(By.className("react-datepicker__month-select")));
+//        WebElement iframe = driver.findElement(By.cssSelector("iframe[id^='google_ads_iframe']"));
+//        ((JavascriptExecutor) driver).executeScript("arguments[0].style.display='none';", iframe);
+        waitForThePresenceOfTheElement(By.className("react-datepicker__month-select"));
+        Select month = new Select(driver.findElement(By.className("react-datepicker__month-select")));
+        month.selectByValue("1");
+        Select year = new Select(driver.findElement(By.className("react-datepicker__year-select")));
+        year.selectByValue("2025");
+        driver.findElement(By.xpath("//div[@aria-label='Choose Sunday, February 9th, 2025']")).click();
+    }
+
+    @Test
+    public void selectDropdown() {
+        driver.get("https://demoqa.com/select-menu");
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        WebElement iframe = driver.findElement(By.cssSelector("iframe[id^='google_ads_iframe']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].style.display='none';", iframe);
+        Select color = new Select(driver.findElement(By.id("oldSelectMenu")));
+        color.selectByValue("1");
+        Select cars = new Select(driver.findElement(By.id("cars")));
+        if (cars.isMultiple()) {
+            cars.selectByValue("saab");
+            cars.selectByValue("audi");
+//            we could have also utilized the method of sendKeys(Keys.CONTROL + "" + Keys.);
+        }
+    }
+
+    @Test
+    public void mouseHover() throws InterruptedException {
+        driver.get("https://dribbble.com/tags/mouse-over");
+        WebElement menuWrite = driver.findElement(By.xpath("//a[normalize-space()='Explore'][normalize-space()='Explore']"));
+        Actions actions = new Actions(driver);
+        actions.moveToElement(menuWrite).perform();
+        Thread.sleep(2000);
+    }
+
+    @Test
+    public void keyboardEvents() throws InterruptedException {
+        driver.get("https://www.google.com/");
+        WebElement searchElement = driver.findElement(By.name("q"));
+        Actions action = new Actions(driver);
+        action.moveToElement(searchElement);
+        action.keyDown(Keys.SHIFT);
+        action.sendKeys("Selenium Webdriver").keyUp(Keys.SHIFT).doubleClick().contextClick().perform();
+        Thread.sleep(2000);
+    }
+
+    @Test
+    public void modalDialog() {
+        driver.get("https://demoqa.com/modal-dialogs");
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(415,559)", "");
+        driver.findElement(By.id("showSmallModal")).click();
+        String text = driver.findElement(By.className("modal-body")).getText();
+        System.out.println(text);
+        driver.findElement(By.id("closeSmallModal")).click();
+    }
+
+    @Test
+    public void uploadImage() {
+        driver.get("https://demoqa.com/upload-download");
+        WebElement uploadElement = driver.findElement(By.id("uploadFile"));
+        uploadElement.sendKeys("D:\\GitHub\\DemoQA-Automation-Testing-with-Selenium-JUnit\\3040-selenium(1).pngL.jpg");
+        String text = driver.findElement(By.id("uploadedFilePath")).getText();
+        Assert.assertTrue(text.contains("3040-selenium(1).pngL.jpg"));
+    }
+
+    @Test
+    public void downloadFile() {
+        driver.get("https://demoqa.com/upload-download");
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(408,542)", "");
+        driver.findElement(By.id("downloadButton")).click();
+    }
+
+    @Test
+    public void handleMultipleTabs() throws InterruptedException {
+        driver.get("https://demoqa.com/browser-windows");
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(402,542)", "");
+        driver.findElement(By.id("tabButton")).click();
+        Thread.sleep(2000);
+        ArrayList<String> tabList = new ArrayList(driver.getWindowHandles());
+        //switch to opentab
+        driver.switchTo().window(tabList.get(1));
+        System.out.println("New tab title: " + driver.getTitle());
+        String text = driver.findElement(By.id("sampleHeading")).getText();
+        Assert.assertEquals(text, "This is a sample page");
+        driver.close();
+        driver.switchTo().window(tabList.get(0));
+    }
+
+    @Test
+    public void handleMultipleWindows() throws InterruptedException {
+        driver.get("https://demoqa.com/browser-windows");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(419,545)", "");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("windowButton")));
+        driver.findElement(By.id(("windowButton"))).click();
+        String mainWindowHandle = driver.getWindowHandle();
+        Set<String> allWindowHandles = driver.getWindowHandles();
+        Iterator<String> iterator = allWindowHandles.iterator();
+        while (iterator.hasNext()) {
+            String ChildWindow = iterator.next();
+            if (!mainWindowHandle.equalsIgnoreCase(ChildWindow)) {
+                driver.switchTo().window(ChildWindow);
+                String text = driver.findElement(By.id("sampleHeading")).getText();
+                Assert.assertTrue(text.contains("This is a sample page"));
+            }
+        }
 
 
-
+    }
 }
-
