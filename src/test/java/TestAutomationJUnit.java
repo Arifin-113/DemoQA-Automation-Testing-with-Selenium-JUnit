@@ -1,3 +1,4 @@
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +10,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -24,6 +27,10 @@ public class TestAutomationJUnit {
         ChromeOptions ops = new ChromeOptions();
         ops.addArguments("--remote-allow-origins=*");
         driver = new ChromeDriver(ops);
+//        ChromeOptions ops = new ChromeOptions();
+//        ops.addArguments("--headless=*");
+//        driver = new ChromeDriver(ops);
+
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
     }
@@ -47,6 +54,54 @@ public class TestAutomationJUnit {
     public void getTitleImg() {
         driver.get("https://demoqa.com");
         driver.findElement(By.cssSelector("img[src='/images/Toolsqa.jpg']"));
+    }
+
+    @Test
+    public void writeforms(){
+        driver.get("https://demoqa.com/automation-practice-form");
+
+        driver.findElement(By.id("firstName")).sendKeys("Arifin");
+        driver.findElement(By.id("lastName")).sendKeys("Mahmud");
+        driver.findElement(By.id("userEmail")).sendKeys("xyz@gmail.com");
+
+        Actions actions = new Actions(driver);
+        WebElement button = driver.findElement(By.xpath("//label[normalize-space()='Male']"));
+        actions.click(button).perform();
+
+        driver.findElement(By.id("userNumber")).sendKeys("4564351285");
+
+//        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(627, 494)", "");
+
+
+        driver.findElement(By.id("dateOfBirthInput")).click();
+        Select month = new Select(driver.findElement(By.className("react-datepicker__month-select")));
+        month.selectByValue("8");
+        Select year = new Select(driver.findElement(By.className("react-datepicker__year-select")));
+        year.selectByValue("1998");
+        driver.findElement(By.xpath("//div[@aria-label='Choose Tuesday, September 1st, 1998']")).click();
+
+//        WebElement subjectsInput = driver.findElement(By.id("subjectsInput")); // Fixed locator
+//        subjectsInput.sendKeys("CSE");
+//        subjectsInput.sendKeys(Keys.ENTER);
+
+//        WebElement checkbox = driver.findElement(By.xpath("//label[normalize-space()='Sports']"));
+//        if (!checkbox.isSelected()) {
+//            checkbox.click();
+
+        WebElement uploadElement = driver.findElement(By.id("uploadPicture"));
+        uploadElement.sendKeys("D:\\GitHub\\DemoQA-Automation-Testing-with-Selenium-JUnit\\3040-selenium(1).pngL.jpg");
+
+        driver.findElement(By.id("currentAddress")).sendKeys("BD");
+
+        WebElement stateDropdown = driver.findElement(By.xpath("//div[@id='state']//div[contains(@class,'indicatorContainer')]"));
+        actions.click(stateDropdown).perform();
+        driver.findElement(By.xpath("//div[text()='NCR']")).click();
+
+        WebElement cityDropdown = driver.findElement(By.xpath("//div[@id='city']//div[contains(@class,'indicatorContainer')]"));
+        actions.click(cityDropdown).perform();
+        driver.findElement(By.xpath("//div[text()='Delhi']")).click();
     }
 
     @Test
@@ -174,6 +229,16 @@ public class TestAutomationJUnit {
     }
 
     @Test
+    public void iframe_handling() {
+        driver.get("https://demoqa.com/frames");
+        driver.switchTo().frame("frame2");
+        String text = driver.findElement(By.id("sampleHeading")).getText();
+        Assert.assertTrue(text.contains("This is a sample page"));
+        driver.switchTo().defaultContent();
+    }
+
+
+    @Test
     public void selectingDateFromDropdown() {
         driver.get("https://demoqa.com/date-picker");
 
@@ -292,5 +357,47 @@ public class TestAutomationJUnit {
         }
 
 
+
     }
+
+    @Test
+    public void screenShot() throws IOException {
+        driver.get("https://demoqa.com");
+        File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        String time = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss-aa").format(new Date());
+        String fileWithPath = "./src/test/resources/screenshots/" + time + ".png";
+        File DestFile = new File(fileWithPath);
+        FileUtils.copyFile(screenshotFile, DestFile);
+    }
+
+    @Test
+    public void dataScrapping() {
+        driver.get("https://demoqa.com/webtables");
+        WebElement table = driver.findElement(By.className("rt-tbody"));
+        List<WebElement> allRows = table.findElements(By.className("rt-tr"));
+        int i = 0;
+        for (WebElement row : allRows) {
+            List<WebElement> cells = row.findElements(By.className("rt-td"));
+            for (WebElement cell : cells) {
+                i++;
+                System.out.println("num[" + i + "] " + cell.getText());
+            }
+        }
+    }
+
+    @Test
+    public void webTables() {
+        driver.get("https://demoqa.com/webtables");
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(925,552)", "");
+        driver.findElement(By.xpath("//span[@id='edit-record-1']//*[@stroke='currentColor']")).click();
+        driver.findElement(By.id("submit")).click();
+    }
+
+
+
+
+
+
 }
+
