@@ -53,7 +53,7 @@ This project is a **Maven-based automation test suite** for the [DemoQA](https:/
 ### 📊 Report 
 ![image](https://github.com/user-attachments/assets/3fad41c1-5047-4f03-a07e-de2a73862197)
 
-## Author
+## Author & Tester
 
 **[Arifin Mahmud](https://www.linkedin.com/in/arifin-mahmud/)**  
 Aspiring QA Engineer | Passionate about quality, bugs, and clean test cases.
