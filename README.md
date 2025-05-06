@@ -42,13 +42,13 @@ This project is a **Maven-based automation test suite** for the [DemoQA](https:/
    cd DemoQA-Automation-Testing-with-Selenium-JUnit
 2. **Install dependencies & run tests:**
    
-   mvn clean test
+   `mvn clean test`
 3. **Generate test report:**
    
-   mvn surefire-report:report
+   `mvn surefire-report:report`
 4. **View Report:**
 
-   target/site/surefire-report.html
+   `target/site/surefire-report.html`
 
 ### 📊 Report 
 ![image](https://github.com/user-attachments/assets/3fad41c1-5047-4f03-a07e-de2a73862197)
